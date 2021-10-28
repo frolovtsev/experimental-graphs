@@ -1,0 +1,36 @@
+import matplotlib.pyplot as plt
+import numpy as np
+import openpyxl as xl
+
+
+book = xl.open("mnk.xlsx", read_only=True)
+sheet = book.active
+x = []
+y = []
+y_error = []
+for row in range(2, sheet.max_row+1):
+    x.append(sheet[row][0].value)
+    y.append(sheet[row][1].value)
+    y_error.append(sheet[row][2].value)
+
+x = np.array(x)
+y = np.array(y)
+y_error = np.array(y_error)
+
+
+A = np.vstack([x, np.ones(len(x))]).T
+m, c = np.linalg.lstsq(A, y, rcond=None)[0]
+print("Коэффициенты: a = ", m, ', b = ', c)
+
+# Строится график
+plt.scatter(x, y, color="purple")
+plt.errorbar(x, y, yerr = y_error, fmt=".", color="purple")
+plt.plot(x, m * x + c, color="crimson")
+plt.xlabel(sheet[1][0].value)
+plt.ylabel(sheet[1][1].value)
+plt.grid()
+
+
+plt.suptitle('Зависимость механического момента от числа витков')
+plt.savefig('plot.png')
+plt.show()

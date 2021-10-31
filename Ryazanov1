@@ -1,0 +1,32 @@
+import numpy as np
+import matplotlib.pyplot as plot
+import openpyxl as exel
+
+x = []
+y = []
+error = []
+
+file = exel.open("324.xlsx", read_only=True)
+sheet = file.active
+
+for i in range(2, sheet.max_row+1):
+    x.append(sheet[i][0].value)
+    y.append(sheet[i][1].value)
+    error.append(sheet[i][2].value)
+
+x = np.array(x)
+y = np.array(y)
+error = np.array(error)
+
+A = np.vstack([x, np.ones(len(x))]).T
+a, b = np.linalg.lstsq(A, y, rcond=None)[0]
+print("slope = ", a, ', intercept = ', b)
+
+plot.scatter(x, y)
+plot.errorbar(x, y, yerr=error, fmt=".b")
+plot.plot(x, a * x + b, 'r')
+plot.xlabel("Iб, мА")
+plot.ylabel("Iк, А")
+plot.grid()
+plot.suptitle('Зависимость тока коллектора от тока базы')
+plot.show()

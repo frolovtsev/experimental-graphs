@@ -1,0 +1,28 @@
+import matplotlib.pyplot as plt
+import numpy as np
+
+data = np.genfromtxt ('data.txt')
+
+i = 0
+x = np.array([])
+y = np.array([])
+error = np.array([])
+
+while i <= np.shape(data)[0]-1:
+    x=np.append(x, data[i][0])
+    y=np.append(y, data[i][1])
+    error=np.append(error,data[i][2])
+    i+=1
+    
+A = np.vstack([x, np.ones(len(x))]).T
+a, b = np.linalg.lstsq(A, y, rcond=None)[0]
+
+print("A = ", a, ', B = ', b)
+
+plt.scatter(x, y, color="red")
+plt.plot(x, x*a+b, color="black")
+plt.errorbar(x,y,error, fmt=":", color="red")
+plt.title ("Зависимость квадрата периода колебаний \n математического маятника от массы груза")
+plt.xlabel('М , г')
+plt.ylabel('T^2,c^2')
+plt.show()

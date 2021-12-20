@@ -1,0 +1,31 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import openpyxl
+
+wookbook = openpyxl.load_workbook("Данные для МНК.xlsx")
+worksheet = wookbook.active
+
+x = np.array([[i.value for i in j] for j in worksheet['A1':'A10']])
+y = np.array([[i.value for i in j] for j in worksheet['B1':'B10']])
+yerr = np.array([[i.value for i in j] for j in worksheet['C1':'C10']])
+
+x = x.flatten()
+y = y.flatten()
+yerr = yerr.flatten()
+
+A = np.vstack([x, np.ones(len(x))]).T
+a, b = np.linalg.lstsq(A, y, rcond=None)[0]
+print('Вид уравнения: x = A * y + B' '\n' 'Коэффициенты:' '\n' "Slope: A =",a, '\n' 'Intercept: B =',b)
+
+plt.plot(x, (a * x + b), color="red", linewidth = 3, label='Расчитанная зависимость')
+plt.scatter(x, y, s=8, color="black", marker="s", label='Экспериментальные данные')
+plt.errorbar(x, y, yerr, fmt=".", elinewidth=1)
+
+plt.xlim([1])
+plt.ylim([0, 25])
+plt.legend()
+plt.xlabel('номер, шт')
+plt.ylabel('Своеобразное значение прямой,кол-во')
+plt.suptitle('Зависимость своеобразного значения прямой от номера')
+plt.grid() 
+plt.show() 

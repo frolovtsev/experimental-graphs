@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import openpyxl
 
-wookbook = openpyxl.load_workbook("Данные для МНК.xlsx")
+wookbook = openpyxl.load_workbook("data0.xlsx")
 worksheet = wookbook.active
 
 x = np.array([[i.value for i in j] for j in worksheet['A1':'A10']])
